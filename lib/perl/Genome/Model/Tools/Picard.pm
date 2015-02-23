@@ -212,11 +212,10 @@ sub enforce_minimum_version {
     return 1;
 }
 
-# in decreasing order of recency
+# descending versions
 sub available_picard_versions {
-    return uniq(discovered_picard_versions(),
-        sort {__PACKAGE__->version_compare($b, $a)} keys %PICARD_VERSIONS
-        );
+    return uniq sort { __PACKAGE__->version_compare($b, $a) }
+           map { _parsed_version($_) } (discovered_picard_versions(), keys(%PICARD_VERSIONS));
 }
 
 sub path_for_picard_version {
