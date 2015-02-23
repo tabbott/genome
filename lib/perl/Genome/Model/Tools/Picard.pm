@@ -171,7 +171,7 @@ my @PICARD_VERSIONS = (
 
 my %PICARD_VERSIONS = @PICARD_VERSIONS;
 
-sub latest_version { ($_[0]->discovered_picard_versions)[0] }
+sub latest_version { ($_[0]->available_picard_versions)[0] }
 
 # deal with the madness that is our list of picard versions
 # return something suited to numerical comparison operators
