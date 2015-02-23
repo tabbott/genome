@@ -171,10 +171,6 @@ my @PICARD_VERSIONS = (
 
 my %PICARD_VERSIONS = @PICARD_VERSIONS;
 
-sub _versions_serial {
-    return @PICARD_VERSIONS[grep {!($_ & 1)} 0..$#PICARD_VERSIONS];
-}
-
 sub latest_version { ($_[0]->installed_picard_versions)[0] }
 
 # deal with the madness that is our list of picard versions
