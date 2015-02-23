@@ -171,7 +171,7 @@ my @PICARD_VERSIONS = (
 
 my %PICARD_VERSIONS = @PICARD_VERSIONS;
 
-sub latest_version { ($_[0]->installed_picard_versions)[0] }
+sub latest_version { ($_[0]->discovered_picard_versions)[0] }
 
 # deal with the madness that is our list of picard versions
 # return something suited to numerical comparison operators
@@ -214,7 +214,7 @@ sub enforce_minimum_version {
 
 # in decreasing order of recency
 sub available_picard_versions {
-    return uniq(installed_picard_versions(),
+    return uniq(discovered_picard_versions(),
         sort {__PACKAGE__->version_compare($b, $a)} keys %PICARD_VERSIONS
         );
 }
@@ -234,7 +234,7 @@ sub path_for_picard_version {
     die 'No path found for picard version: '.$version;
 }
 
-sub installed_picard_versions {
+sub discovered_picard_versions {
     my @files = glob('/usr/share/java/picard-*.jar');
 
     my @versions;
