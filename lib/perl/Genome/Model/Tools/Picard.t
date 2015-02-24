@@ -78,7 +78,8 @@ subtest "Version compare" => sub {
 
 subtest "Enforce minimum version" => sub {
     # These are ordered from greatest to least
-    my @versions = $pkg->_versions_serial;
+    my @versions = @PICARD_VERSIONS[grep {!($_ & 1)} 0..$#PICARD_VERSIONS];
+
     my $obj = $pkg->create;
 
     for my $i (0..$#versions) {

@@ -171,11 +171,7 @@ my @PICARD_VERSIONS = (
 
 my %PICARD_VERSIONS = @PICARD_VERSIONS;
 
-sub _versions_serial {
-    return @PICARD_VERSIONS[grep {!($_ & 1)} 0..$#PICARD_VERSIONS];
-}
-
-sub latest_version { ($_[0]->installed_picard_versions)[0] }
+sub latest_version { ($_[0]->available_picard_versions)[0] }
 
 # deal with the madness that is our list of picard versions
 # return something suited to numerical comparison operators
@@ -208,6 +204,10 @@ sub version_compare {
 sub enforce_minimum_version {
     my ($self, $min_version) = @_;
 
+    unless (_parsed_version($min_version)) {
+        confess "Minimum Picard version is invalid ($min_version)";
+    }
+
     if ($self->version_compare($self->use_version, $min_version) < 0) {
         confess sprintf "This module requires picard version >= %s (%s requested)",
                 $min_version, $self->use_version;
@@ -216,11 +216,10 @@ sub enforce_minimum_version {
     return 1;
 }
 
-# in decreasing order of recency
+# descending versions
 sub available_picard_versions {
-    return uniq(installed_picard_versions(),
-        sort {__PACKAGE__->version_compare($b, $a)} keys %PICARD_VERSIONS
-        );
+    return uniq sort { __PACKAGE__->version_compare($b, $a) }
+           map { _parsed_version($_) } (discovered_picard_versions(), keys(%PICARD_VERSIONS));
 }
 
 sub path_for_picard_version {
@@ -238,7 +237,7 @@ sub path_for_picard_version {
     die 'No path found for picard version: '.$version;
 }
 
-sub installed_picard_versions {
+sub discovered_picard_versions {
     my @files = glob('/usr/share/java/picard-*.jar');
 
     my @versions;
